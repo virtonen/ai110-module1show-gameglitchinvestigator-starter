@@ -5,8 +5,15 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 ## 1. What was broken when you started?
 
 - What did the game look like the first time you ran it?
+
+A normal-looking number-guessing game at first sight. It prompts me to pick a difficulty (I assume most popular answers from social surveys or single digit numbers are easy and higher numbers are more difficult), I get a range of 1 to 100 and attempt limit, type a guess, and get a hint after each try. However, running it, I noticed that the hint is not useful, and I couldn't start a new game.
+
 - List at least two concrete bugs you noticed at the start  
   (for example: "the hints were backwards").
+
+1. Clicking "New Game" after winning or losing doesn't actually let you play again — the app still shows "You already won".
+2. On some attempts, the "Too High"/"Too Low" hint is backwards relative to the actual secret number in the Developer Debug Info.
+
 
 **Bug Reproduction Log**
 
@@ -14,9 +21,9 @@ Document at least 3 bugs you found. Add rows as needed.
 
 | Input | Expected Behavior | Actual Behavior | Console Output / Error |
 |-------|-------------------|-----------------|------------------------|
-| | | | |
-| | | | |
-| | | | |
+| Win a round, then click "New Game" | New round starts fresh: status resets to "playing", score/history is cleared, new secret drawn from the selected difficulty's range | App still shows "You already won. Start a new game to play again." and doesn't allow to keep playing; status is never reset back to "playing" | No error — logic bug |
+| Guess on an even-numbered attempt | Hint direction should be based on a numeric comparison against the secret | Weirdly, the hint is sometimes backwards; the secret gets cast to a string on even attempts, so the comparison falls back to string ordering instead of numeric ordering | TypeError raised, but not visible because it's under try/except |
+| -500 or 999999 as a guess | Guess should be rejected as outside the valid range for the difficulty | Guess is accepted as valid, consumes an attempt, and is scored normally | No error — missing range validation |
 
 ---
 
