@@ -39,7 +39,7 @@ Claude Sonnet 5 Medium.
 
 - Give one example of an AI suggestion you did not accept as written (including what the AI suggested, why you rejected or changed it, and how you verified your version). It does not have to be a suggestion that was wrong: over-engineered, out of scope, harder to read, or a poor fit for this codebase all count.
 
-
+Claude Sonnet 5 recommended fixing the string-coercing bug (cast to str on even attepmts) after I requested to "update the logic to fix the high/low bug". I rejected and changed it because the real defect was that the hint messages were swapped relative to their outcome labels. I verified it by inspecting the code myself and a test that asserts the message text on top of checking the outcome label. Claude wasn't wrong, it just fixed a different, intermittent case.
 
 ---
 
