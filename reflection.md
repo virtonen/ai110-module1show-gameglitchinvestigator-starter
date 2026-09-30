@@ -47,7 +47,7 @@ Claude Sonnet 5 recommended fixing the string-coercing bug (cast to str on even 
 
 - How did you decide whether a bug was really fixed?
 
-
+Using extra tests in test_game_logic.py, like test_guess_too_low_regression_for_string_comparison_bug() and test_guess_handles_string_secret. I also cleared streamlit localhost cookies, restarted the app, and verified all the fixes manually, testing on a variety of inputs from the tests and beyond.
 
 - Describe at least one test you ran (manual or using pytest)  
   and what it showed you about your code.
