@@ -52,6 +52,7 @@ Using extra tests in test_game_logic.py, like test_guess_too_low_regression_for_
 - Describe at least one test you ran (manual or using pytest)  
   and what it showed you about your code.
 
+I ran pytest test_game_logic.py, and when I updated the tests to assert the actual hint message text (not just the outcome label), it would have caught the swapped "Go HIGHER"/"Go LOWER" output bug that Claude's outcome-only assertions had missed.
 
 
 - Did AI help you design or understand any tests? How?
