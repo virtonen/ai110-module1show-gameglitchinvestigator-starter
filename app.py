@@ -98,7 +98,7 @@ if submit:
         st.session_state.attempts += 1
         st.session_state.history.append(guess_int)
 
-        outcome, message = check_guess(guess_int, st.session_state.secret)
+        outcome, message = check_guess(guess_int, st.session_state.secret, low, high)
 
         if show_hint:
             st.warning(message)
