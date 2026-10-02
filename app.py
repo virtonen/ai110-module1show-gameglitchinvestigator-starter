@@ -70,6 +70,8 @@ with col2:
 with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
+# FIX: New Game now resets status/score/history and uses the difficulty's
+# range instead of a hardcoded 1-100 (manual mode, per my instruction to Claude Sonnet 5)
 if new_game:
     st.session_state.attempts = 0
     st.session_state.secret = random.randint(low, high)
@@ -93,6 +95,9 @@ if submit:
         st.session_state.history.append(raw_guess)
         st.error(err)
     else:
+        # FIX: attempt count only increments on a valid guess, so invalid/
+        # out-of-range input no longer burns an attempt (manual mode, per
+        # my instruction to Claude Sonnet 5)
         st.session_state.attempts += 1
         st.session_state.history.append(guess_int)
 
