@@ -25,21 +25,39 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+**The game's purpose:** Streamlit number-guessing game. Pick a difficulty, get a secret number and a limited number of attempts, and guess it using hints before you run out of tries.
+
+**Bugs I found:**
+1. The "Too High"/"Too Low" hint messages were swapped relative to their outcome labels — a guess that was too high told you to go higher, and vice versa.
+2. On every even-numbered attempt, the secret was cast to a string before being compared, so the comparison fell back to lexicographic (string) ordering instead of numeric, occasionally giving a wrong direction.
+3. "New Game" never reset `status`, `score`, or `history`, and redrew the secret from a hardcoded 1-100 instead of the selected difficulty's range — so after a win/loss, clicking it left you stuck on "You already won."
+4. There was no validation on guesses outside the difficulty's range (e.g. -500 or 999999 were accepted as valid attempts).
+5. The attempt counter incremented even on invalid/non-numeric input.
+6. The guess prompt hardcoded "between 1 and 100" regardless of difficulty, and the attempts counter started at 1 instead of 0, undercounting "Attempts left" by one from the start.
+7. Switching difficulty mid-game kept the old secret and attempt count under the new difficulty's range and attempt limit.
+
+**Fixes I applied:**
+- Rewrote `check_guess` so the hint messages correctly match "Too High" → go lower and "Too Low" → go higher, and made it coerce both `guess` and `secret` to `int` before comparing.
+- Reset `status`, `score`, and `history` in the "New Game" handler, and had it draw the new secret from the current difficulty's correct range.
+- Added range validation to `parse_guess`, rejecting guesses outside `[low, high]` with a clear error message.
+- Moved the attempt-counter increment so it only triggers on a successfully parsed, in-range guess.
+- Fixed the guess prompt to return the correct `low`/`high` values, and initialized `attempts` to 0.
+- Added a single difficulty-change check that resets the secret, attempts, score, status, and history whenever the difficulty dropdown changes, instead of only initializing state once per session.
+- Refactored `get_range_for_difficulty`, `parse_guess`, `check_guess`, and `update_score` out of `app.py` and into `logic_utils.py` as cleaner functions, and added pytests (21 tests) for all of them, including regression tests for the swapped-hint and string-comparison bugs.
 
 ## 📸 Demo Walkthrough
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. Run `python -m streamlit run app.py` and select "Easy" in the sidebar — the sidebar correctly shows "Range: 1 to 20" and "Attempts allowed: 6", and the guess prompt matches with "Guess a number between 1 and 20."
+2. Open the "Developer Debug Info" expander to reveal the secret number (13 in this run).
+3. Submit a few guesses (55, 19, 17, 11) and watch the hints correctly point toward 13 each time, and the History log in Developer Debug Info record every guess in order, including the out-of-range "55" that was rejected without consuming an attempt.
+4. Guess 13 and see the "🎉 Correct, you won!" popup appear in the same style as the earlier hints, followed by "You won! The secret was 13. Final score: 30."
+5. Click "New Game 🔁" to confirm a fresh secret is drawn from the same Easy range (1-20), with attempts, score, and history all reset back to 0/0/empty instead of staying stuck on "You already won."
 
-**Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
+**Screenshot**: A winning round on Easy difficulty, showing the correct range/attempts in the sidebar, the guess history, and the "Correct, you won!" + final score messages.
+
+![Winning game screenshot](screenshot.png)
 
 ## 🧪 Test Results
 
