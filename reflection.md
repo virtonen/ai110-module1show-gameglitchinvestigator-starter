@@ -35,7 +35,7 @@ Claude Sonnet 5 Medium.
 
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
 
-
+Claude suggested moving get_range_for_difficulty, parse_guess, and update_score out of app.py and into logic_utils.py (alongside check_guess), and importing all four back into app.py. I ran python -m pytest tests/test_game_logic.py -v and confirmed all tests still passed (21/21). I also ran the app itself and played a full round to confirm nothing broke.
 
 - Give one example of an AI suggestion you did not accept as written (including what the AI suggested, why you rejected or changed it, and how you verified your version). It does not have to be a suggestion that was wrong: over-engineered, out of scope, harder to read, or a poor fit for this codebase all count.
 
@@ -47,7 +47,7 @@ Claude Sonnet 5 recommended fixing the string-coercing bug (cast to str on even 
 
 - How did you decide whether a bug was really fixed?
 
-Using extra tests in test_game_logic.py, like test_guess_too_low_regression_for_string_comparison_bug() and test_guess_handles_string_secret. I also cleared streamlit localhost cookies, restarted the app, and verified all the fixes manually, testing on a variety of inputs from the tests and beyond.
+Using extra tests in test_game_logic.py, like test_guess_too_low_regression_for_string_comparison_bug() and test_guess_handles_string_secret(). I also cleared streamlit localhost cookies, restarted the app, and verified all the fixes manually, testing on a variety of inputs from the tests and beyond.
 
 - Describe at least one test you ran (manual or using pytest)  
   and what it showed you about your code.
@@ -57,7 +57,7 @@ I ran pytest test_game_logic.py, and when I updated the tests to assert the actu
 
 - Did AI help you design or understand any tests? How?
 
-
+Yes, Claude Sonnet 5 Medium helped draft some tests for check_guess, get_range_for_difficulty, parse_guess, and update_score. I was confused about test_parse_guess_none_rejected(), and it helped me understand that the test checks the runtime guard for parse_guess so it's correctly rejected with an error message.
 
 ---
 
