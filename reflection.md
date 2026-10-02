@@ -13,6 +13,7 @@ A normal-looking number-guessing game at first sight. It prompts me to pick a di
 
 1. Clicking "New Game" after winning or losing doesn't actually let you play again — the app still shows "You already won".
 2. On some attempts, the "Too High"/"Too Low" hint is backwards relative to the actual secret number in the Developer Debug Info.
+3. The guess prompt always said "Guess a number between 1 and 100" even on Easy/Hard difficulty (where the real range is 1-20 or 1-50), and the "Attempts left" counter started one attempt short before I had even made a guess.
 
 
 **Bug Reproduction Log**
@@ -24,6 +25,8 @@ Document at least 3 bugs you found. Add rows as needed.
 | Win a round, then click "New Game" | New round starts fresh: status resets to "playing", score/history is cleared, new secret drawn from the selected difficulty's range | App still shows "You already won. Start a new game to play again." and doesn't allow to keep playing; status is never reset back to "playing" | No error; logic bug |
 | Guess on an even-numbered attempt | Hint direction should be based on a numeric comparison against the secret | Weirdly, the hint is sometimes backwards; the secret gets cast to a string on even attempts, so the comparison falls back to string ordering instead of numeric ordering | TypeError raised, but not visible because it's under try/except |
 | -500 or 999999 as a guess | Guess should be rejected as outside the valid range for the difficulty | Guess is accepted as valid, consumes an attempt, and is scored normally | No error; missing range validation |
+| Select "Easy" or "Hard" difficulty and read the guess prompt | Prompt should show the actual range for that difficulty (e.g. 1-20 or 1-50) | Prompt always said "Guess a number between 1 and 100", regardless of selected difficulty | No error; hardcoded text bug |
+| Load the app fresh (no guesses made yet) on any difficulty | "Attempts left" should show the full attempt_limit (e.g. 8 on Normal) | Showed one less than the real limit (e.g. 7), because `attempts` was initialized to 1 instead of 0 | No error |
 
 ---
 
@@ -36,6 +39,8 @@ Claude Sonnet 5 Medium.
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
 
 Claude suggested moving get_range_for_difficulty, parse_guess, and update_score out of app.py and into logic_utils.py (alongside check_guess), and importing all four back into app.py. I ran python -m pytest tests/test_game_logic.py -v and confirmed all tests still passed (21/21). I also ran the app itself and played a full round to confirm nothing broke.
+
+Claude also caught two smaller flaws I hadn't flagged: the guess prompt hardcoding "1 and 100" instead of using the difficulty's actual low/high, and attempts being initialized to 1 instead of 0 (making "Attempts left" undercount by one before any guess was made). It fixed the st.info text to {low}/{high} and changed the initial attempts value to 0 in app.py. I verified by running the app on Easy and Hard difficulty and confirming the prompt text now matches the sidebar's stated range, and that "Attempts left" shows the full attempt limit on a fresh load.
 
 - Give one example of an AI suggestion you did not accept as written (including what the AI suggested, why you rejected or changed it, and how you verified your version). It does not have to be a suggestion that was wrong: over-engineered, out of scope, harder to read, or a poor fit for this codebase all count.
 
@@ -82,4 +87,6 @@ Yes, Claude Sonnet 5 Medium helped draft some tests for check_guess, get_range_f
 - What is one thing you would do differently next time you work with AI on a coding task?
 
 
+
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+
