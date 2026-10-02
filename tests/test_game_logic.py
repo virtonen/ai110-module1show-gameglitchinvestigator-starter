@@ -40,6 +40,33 @@ def test_guess_handles_string_secret():
     assert outcome == "Too Low"
 
 
+# --- check_guess warmth hint -------------------------------------------
+
+def test_check_guess_without_range_has_no_warmth_hint():
+    # Without low/high, the message should be unchanged (backwards compatible).
+    outcome, message = check_guess(60, 50)
+    assert outcome == "Too High"
+    assert "🔥" not in message and "❄️" not in message
+
+def test_check_guess_very_close_guess_is_hot():
+    # Range 1-100, secret 50, guess 52: distance 2 is within 5% of the span.
+    outcome, message = check_guess(52, 50, 1, 100)
+    assert outcome == "Too High"
+    assert "Very close" in message
+
+def test_check_guess_far_guess_is_cold():
+    # Range 1-100, secret 50, guess 95: distance 45 is way more than 35% of the span.
+    outcome, message = check_guess(95, 50, 1, 100)
+    assert outcome == "Too High"
+    assert "Way off" in message
+
+def test_check_guess_mid_distance_guess_is_warm():
+    # Range 1-100, secret 50, guess 60: distance 10 is within 15% of the span.
+    outcome, message = check_guess(60, 50, 1, 100)
+    assert outcome == "Too High"
+    assert "Warm" in message
+
+
 # --- get_range_for_difficulty ---------------------------------------------
 
 def test_range_easy():
