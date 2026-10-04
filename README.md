@@ -62,11 +62,22 @@ Describe your fixed game in numbered steps so a reader can follow along without 
 ## 🧪 Test Results
 
 ```
-# Paste your pytest output here, e.g.:
-# pytest tests/
-# ========================= X passed in 0.XXs =========================
+# Paste your pytest output here:
+
+python -m pytest
+========================================================== test session starts ==========================================================
+platform darwin -- Python 3.14.6, pytest-9.0.3, pluggy-1.6.0
+rootdir: /Users/vvirtonen/GitHub/ai110/ai110-module1show-gameglitchinvestigator-starter
+plugins: anyio-4.12.1
+collected 25 items                                                                                                                      
+
+tests/test_game_logic.py .........................                                                                                [100%]
+
+========================================================== 25 passed in 0.01s ===========================================================
+
 ```
 
 ## 🚀 Stretch Features
 
 - [ ] [If you choose to complete Challenge 4, describe the Enhanced UI changes here — a screenshot is optional]
+

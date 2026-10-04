@@ -70,7 +70,7 @@ Yes, Claude Sonnet 5 Medium helped draft some tests for check_guess, get_range_f
 
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
 
-
+Streamlit re-executes your entire script top to bottom every time you interact with a widget (click a button, type in a box, change a dropdown). It's not like a regular app you might be used to where only the part you touched updates. That means any plain Python variable resets to its initial value on every single interaction unless you explicitly store it in `st.session_state`, which is a dict-like object that is retained across reruns for that browser session. My takeaway best practice is: find the event that should change state, and explicitly write to `st.session_state` in that branch so nothing persists by accident, and nothing resets by accident either.
 
 ---
 
@@ -78,15 +78,14 @@ Yes, Claude Sonnet 5 Medium helped draft some tests for check_guess, get_range_f
 
 - What is one habit or strategy from this project that you want to reuse in future labs or projects?
 
-
-
   - This could be a testing habit, a prompting strategy, or a way you used Git.
 
+    Writing tests that assert the output content and thinking about my test coverage more in-depth. I feel like I should not be afraid of generating new tests I do not yet understand to cover more failure modes and then attempt to understand them all. Going forward, I want to focus on what my tests miss instead of trusting a green checkmark.
 
-  
 - What is one thing you would do differently next time you work with AI on a coding task?
 
-
+  I'd push back earlier and more specifically on AI claims of "fixed." Claude confidently said the high/low bug was resolved after only fixing the intermittent string-coercion issue, and I caught the bug (swapped messages) myself by playing the game. Next time I'd verify behavior against a real example before accepting a fix as done.
 
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
 
+  AI-written code can look complete and pass a superficial read while hiding bugs that only show up when you actually exercise the logic with real inputs — confidence in an explanation is not the same as verification, and I now trust "it's fixed" less than I trust a comprehensive set of pytests.
