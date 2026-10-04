@@ -52,18 +52,52 @@ I played a full round myself to check the hint tiers actually feel right at diff
 **Prompt used:**
 
 ```
-<!-- Paste the prompt you gave the AI -->
+review my code for PEP 8 style compliance and apply its suggestions to resolve any formatting or naming issues it identifies. @ai110-module1show-gameglitchinvestigator-starter/logic_utils.py @ai110-module1show-gameglitchinvestigator-starter/tests/test_game_logic.py  @ai110-module1show-gameglitchinvestigator-starter/app.py
 ```
 
 **Linting output before:**
 
 ```
-<!-- Paste relevant linter warnings/errors -->
+$ flake8 logic_utils.py tests/test_game_logic.py app.py
+
+tests/test_game_logic.py:8:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:15:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:22:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:29:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:36:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:45:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:51:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:57:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:63:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:72:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:75:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:78:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:81:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:89:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:95:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:101:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:107:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:112:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:118:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:124:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:130:1: E302 expected 2 blank lines, found 1
+tests/test_game_logic.py:160:1: W391 blank line at end of file
+
+# After fixing blank-line spacing
+app.py:4:80: E501 line too long (88 > 79 characters)
+app.py:71:80: E501 line too long (89 > 79 characters)
+app.py:101:80: E501 line too long (85 > 79 characters)
+logic_utils.py:69:80: E501 line too long (83 > 79 characters)
+tests/test_game_logic.py:65:80: E501 line too long (85 > 79 characters)
 ```
 
 **Changes applied:**
 
-<!-- Describe what you changed based on the AI's suggestions -->
+- Added the missing blank line before every top-level `def` in `tests/test_game_logic.py`.
+- Wrapped `app.py`'s long multi-name import.
+- Rewrapped three long `# FIX:` comments (two in `app.py`, one in `logic_utils.py`) across multiple lines.
+- Split a long `check_guess(...)` call in `app.py`.
+- Re-ran `flake8` on all three files afterward and re-ran `pytest` (all passed).
 
 ---
 
