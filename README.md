@@ -85,6 +85,6 @@ tests/test_game_logic.py .........................                              
   - 🙂 "Getting warmer" — within 35% of the range
   - ❄️ "Way off" — anything further
 
-  Implemented as a `_warmth_hint` helper in `logic_utils.py` that `check_guess` calls when given the difficulty's `low`/`high`, so a guess like "too high" now shows as `📉 Go LOWER! 🔥 Warm!`. 
+  Implemented as a `_warmth_hint` helper in `logic_utils.py` that `check_guess` calls when given the difficulty's `low`/`high`, so a guess like "too high" now shows as `📉 Go LOWER! 🔥 Warm!`.
   
   It is backwards compatible. Calling `check_guess` without a range skips the warmth text. Covered by 4 new tests and verified by playing in the browser.
