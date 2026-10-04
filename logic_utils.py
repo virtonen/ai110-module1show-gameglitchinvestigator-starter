@@ -65,8 +65,9 @@ def parse_guess(raw: str, low: int, high: int):
     except Exception:
         return False, None, "That is not a number."
 
-    # FIX: reject guesses outside the difficulty's range, which previously
-    # had no validation at all (manual mode, per my instruction to Claude Sonnet 5)
+    # FIX: reject guesses outside the difficulty's range, which
+    # previously had no validation at all (manual mode, per my
+    # instruction to Claude Sonnet 5)
     if value < low or value > high:
         return False, None, f"Enter a number between {low} and {high}."
 

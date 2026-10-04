@@ -62,7 +62,8 @@ def test_check_guess_very_close_guess_is_hot():
 
 
 def test_check_guess_far_guess_is_cold():
-    # Range 1-100, secret 50, guess 95: distance 45 is way more than 35% of the span.
+    # Range 1-100, secret 50, guess 95: distance 45 is way more than 35%
+    # of the span.
     outcome, message = check_guess(95, 50, 1, 100)
     assert outcome == "Too High"
     assert "Way off" in message
