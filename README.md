@@ -79,5 +79,12 @@ tests/test_game_logic.py .........................                              
 
 ## 🚀 Stretch Features
 
-- [ ] [If you choose to complete Challenge 4, describe the Enhanced UI changes here — a screenshot is optional]
+- [x] **Challenge 4 — Enhanced UI: progressive "warmer/colder" hints.** Each hint now also tells you how close you are, based on how far the guess is from the secret relative to the full guessing range:
+  - 🔥🔥 "Very close!" — within 5% of the range
+  - 🔥 "Warm!" — within 15% of the range
+  - 🙂 "Getting warmer" — within 35% of the range
+  - ❄️ "Way off" — anything further
 
+  Implemented as a `_warmth_hint` helper in `logic_utils.py` that `check_guess` calls when given the difficulty's `low`/`high`, so a guess like "too high" now shows as `📉 Go LOWER! 🔥 Warm!`. 
+  
+  It is backwards compatible. Calling `check_guess` without a range skips the warmth text. Covered by 4 new tests and verified by playing in the browser.
