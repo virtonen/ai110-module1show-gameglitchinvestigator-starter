@@ -1,0 +1,70 @@
+%%{init: {"flowchart": {"htmlLabels": true}} }%%
+flowchart TD
+
+    %% --- External entry point -------------------------------------------
+    Player(["Player (browser)"])
+
+    %% --- UI / orchestration layer ---------------------------------------
+    %% app.py is kept "thin": it only renders widgets, reads/writes
+    %% st.session_state, and calls into logic_utils for every decision.
+    %% This keeps the one piece of code that NEEDS a live Streamlit runtime
+    %% as small as possible, since it can't be unit-tested directly.
+    subgraph UI["app.py (Streamlit UI + orchestration)"]
+        Widgets["Widgets:\nselectbox / text_input / buttons / checkbox"]
+        State[("st.session_state:\nsecret, attempts, score,\nstatus, history, difficulty")]
+        Render["Render:\nhints, win/lose messages,\nsidebar range + debug panel"]
+    end
+
+    %% --- Pure logic layer -------------------------------------------------
+    %% Every rule that can be expressed as input -> output with no I/O lives
+    %% here as a pure function. Pure functions are the easiest unit to test,
+    %% reuse, and reason about..
+    subgraph LOGIC["logic_utils.py (pure game logic)"]
+        GetRange["get_range_for_difficulty(difficulty)\n-> (low, high)"]
+        ParseGuess["parse_guess(raw, low, high)\n-> (ok, guess_int, error)"]
+        CheckGuess["check_guess(guess, secret, low=None, high=None)\n-> (outcome, message)"]
+        Warmth["_warmth_hint(guess, secret, low, high)\n-> warmth text (private helper)"]
+        UpdateScore["update_score(score, outcome, attempt_number)\n-> new score"]
+    end
+
+    %% --- Test layer ---------------------------------------------------
+    %% Tests import ONLY logic_utils, never app.py. app.py executes
+    %% Streamlit calls at module import time, so it can't be imported in
+    %% a plain pytest process without a Streamlit test harness. Depending
+    %% only on the pure layer is what makes 25 fast, no-UI tests possible.
+    subgraph TESTS["tests/test_game_logic.py"]
+        PyTest["pytest: 25 tests\n(happy paths, edge cases, regressions)"]
+    end
+
+    %% --- Flow -----------------------------------------------------------
+    Player --> Widgets
+    Widgets --> State
+    State --> GetRange
+    State --> ParseGuess
+    State --> CheckGuess
+    CheckGuess --> Warmth
+    State --> UpdateScore
+    GetRange --> State
+    ParseGuess --> State
+    CheckGuess --> State
+    UpdateScore --> State
+    State --> Render
+    Render --> Player
+
+    PyTest -. "imports (no Streamlit needed)" .-> LOGIC
+
+    %% --- Why this shape is the right one for this project ----------------
+    %% 1. Single source of truth per fact: game rules live ONLY in
+    %%    logic_utils.py. app.py never re-implements a rule inline, which
+    %%    is what caused the original swapped-hint and string-comparison
+    %%    bugs.
+    %% 2. Dependency direction is one-way: UI -> LOGIC. logic_utils.py
+    %%    imports nothing from app.py or streamlit, so it has zero
+    %%    framework coupling and can be reused (CLI version, different UI)
+    %%    without change.
+    %% 3. State lives in exactly one place (st.session_state), and every
+    %%    write to it is explicit and triggered by a named event (button
+    %%    click, difficulty change).
+    %% 4. Testability follows the architecture:
+    %%    because LOGIC has no side effects, all 25 tests run in ~0.01s
+    %%    with no mocking, no browser, no Streamlit server.
